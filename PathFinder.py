@@ -106,38 +106,44 @@ class Spot:
         if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # LEFT
             self.neighbors.append(grid[self.row][self.col - 1])
 
-    def __lt__(self, other): #basically a lessthan operator to make sure our values are always in the positive
+    def __lt__(self, other):  # basically a lessthan operator to make sure our values are always in the positive
         return False
 
-#Defining the heuristic function of our algorithm 
+# Defining the heuristic function of our algorithm
+
+
 def h(p1, p2):
     # since we are using manhattan distance
     x1, y1 = p1
     x2, y2 = p2
-    return abs(x1 - x2) + abs(y1 - y2)  #abs is for absolute
+    return abs(x1 - x2) + abs(y1 - y2)  # abs is for absolute
 
-#defining our path construction
+# defining our path construction
+
+
 def reconstruct_path(came_from, current, draw):
     while current in came_from:
         current = came_from[current]
         current.make_path()
         draw()
 
-#defining our algorithm
+# defining our algorithm
+
+
 def algorithm(draw, grid, start, end):
     count = 0
-    open_set = PriorityQueue()  #keeping track our values
+    open_set = PriorityQueue()  # keeping track our values
     open_set.put((0, count, start))
-    came_from = {} #keep track of our previous path 
-    g_score = {spot: float("inf") for row in grid for spot in row} 
-    g_score[start] = 0 #tracking our gscore
+    came_from = {}  # keep track of our previous path
+    g_score = {spot: float("inf") for row in grid for spot in row}
+    g_score[start] = 0  # tracking our gscore
     f_score = {spot: float("inf") for row in grid for spot in row}
-    f_score[start] = h(start.get_pos(), end.get_pos()) #tracking our fscore
+    f_score[start] = h(start.get_pos(), end.get_pos())  # tracking our fscore
 
-    #checking if values are in priority queue
+    # checking if values are in priority queue
     open_set_hash = {start}
 
-    #Allowing the user to quit the mid pathfinding process
+    # Allowing the user to quit the mid pathfinding process
     while not open_set.empty():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -148,7 +154,7 @@ def algorithm(draw, grid, start, end):
         open_set_hash.remove(current)
 
         if current == end:
-            reconstruct_path(came_from, end, draw) #make path
+            reconstruct_path(came_from, end, draw)  # make path
             end.make_end()
             return True
 
@@ -169,20 +175,21 @@ def algorithm(draw, grid, start, end):
                     neighbor.make_open()
                     # choosing the new set of values with a shorter length
 
-
         draw()
 
         if current != start:
             # if current is not the start node make it close.
             current.make_closed()
-    
+
             # if we are not able to find a path, then we will return false.
     return False
 
-#making our grid
+# making our grid
+
+
 def make_grid(rows, width):
-    grid = [] # basically its going to be alot of lists inside alot of lists 
-    gap = width // rows # define the width of each spot / cube that we will work on
+    grid = []  # basically its going to be alot of lists inside alot of lists
+    gap = width // rows  # define the width of each spot / cube that we will work on
     for i in range(rows):
         grid.append([])
         for j in range(rows):
@@ -192,14 +199,20 @@ def make_grid(rows, width):
     return grid
 
 # Grid Lines
+
+
 def draw_grid(win, rows, width):
     gap = width // rows
     for i in range(rows):
-        pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap)) #Horizontal Lines
+        pygame.draw.line(win, GREY, (0, i * gap),
+                         (width, i * gap))  # Horizontal Lines
         for j in range(rows):
-            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width)) #Vertical Lines
+            pygame.draw.line(win, GREY, (j * gap, 0),
+                             (j * gap, width))  # Vertical Lines
 
-#Main draw function of our grid
+# Main draw function of our grid
+
+
 def draw(win, grid, rows, width):
     win.fill(WHITE)
 
@@ -210,7 +223,9 @@ def draw(win, grid, rows, width):
     draw_grid(win, rows, width)
     pygame.display.update()
 
-#Making the spot clickable
+# Making the spot clickable
+
+
 def get_clicked_pos(pos, rows, width):
     gap = width // rows
     y, x = pos
@@ -220,31 +235,33 @@ def get_clicked_pos(pos, rows, width):
 
     return row, col
 
-#Creating our main event 
-def main(win, width): #checking if everthing is set
-    ROWS = 50 #can be changed
-    grid = make_grid(ROWS, width) #generate grid
+# Creating our main event
+
+
+def main(win, width):  # checking if everthing is set
+    ROWS = 40  # can be changed
+    grid = make_grid(ROWS, width)  # generate grid
 
     start = None
-    end = None #user defined
+    end = None  # user defined
 
-    run = True #main loop
-    while run: 
+    run = True  # main loop
+    while run:
         draw(win, grid, ROWS, width)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False #Allowing to quit mid program when clicked "X"
+                run = False  # Allowing to quit mid program when clicked "X"
 
-            #Making barriers, start and end points
+            # Making barriers, start and end points
             if pygame.mouse.get_pressed()[0]:  # LEFT
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
-                spot = grid[row][col] #index of our rows and coloumn
+                spot = grid[row][col]  # index of our rows and coloumn
                 if not start and spot != end:
                     start = spot
                     start.make_start()
 
-                elif not end and spot != start: #start and end are not the same
+                elif not end and spot != start:  # start and end are not the same
                     end = spot
                     end.make_end()
 
@@ -252,7 +269,7 @@ def main(win, width): #checking if everthing is set
                     spot.make_barrier()
 
             # Removing barriers, start and end points
-            elif pygame.mouse.get_pressed()[2]: #right click
+            elif pygame.mouse.get_pressed()[2]:  # right click
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
                 spot = grid[row][col]
@@ -263,17 +280,19 @@ def main(win, width): #checking if everthing is set
                     end = None
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and start and end: #start
+                if event.key == pygame.K_SPACE and start and end:  # start
                     for row in grid:
                         for spot in row:
-                            spot.update_neighbors(grid) 
+                            spot.update_neighbors(grid)
 
-                    algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end) #start algo.
+                    # start algo.
+                    algorithm(lambda: draw(win, grid, ROWS, width),
+                              grid, start, end)
 
-                if event.key == pygame.K_c: #reset
+                if event.key == pygame.K_c:  # reset
                     start = None
                     end = None
-                    grid = make_grid(ROWS, width) #reset prog.
+                    grid = make_grid(ROWS, width)  # reset prog.
 
     pygame.quit()
 
