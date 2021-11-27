@@ -3,6 +3,27 @@ import math
 from queue import PriorityQueue
 # For the algorithm , will works as an auto-ordering list which is important when we want to decide which node we want to move to.
 
+import ctypes  # An included library with Python install.
+ctypes.windll.user32.MessageBoxW(0, """VISUAL PATH FINDER WITH GUI 
+
+HOW IT WORKS❓❓
+
+⌨ Left Click -> Create start point, end point and barriers.
+⌨ Right Click -> Remove start point end point and barriers.
+⌨ Space Bar -> Start the visualisation.
+⌨ Ctrl + C -> Reset the grid.
+
+HOW TO USE IT❓❓
+
+Step 1. Create a start point 
+Step 2. Create an end point
+Step 3. Create barriers
+Step 4. Press SpaceBar to start the pathfinding algorithm
+Step 5. Press Ctrl + C to reset the grid and start again.
+
+""", "Visual Path Finder", button='start')
+
+
 # Setting up the display, giving 800  and creating a square window by giving win=width,width
 WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
