@@ -4,7 +4,6 @@ from queue import PriorityQueue
 # For the algorithm , will works as an auto-ordering list which is important when we want to decide which node we want to move to.
 
 # creating the pop up box with details
-import ctypes  # An included library with Python install.
 ctypes.windll.user32.MessageBoxW(0, """VISUAL PATH FINDER WITH GUI 
 
 HOW IT WORKS❓❓
